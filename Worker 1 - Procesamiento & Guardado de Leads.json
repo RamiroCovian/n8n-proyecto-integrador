@@ -1,0 +1,432 @@
+{
+  "name": "Worker 1 - Procesamiento & Guardado de Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "phone"
+            },
+            {
+              "name": "company"
+            },
+            {
+              "name": "interest"
+            },
+            {
+              "name": "qualification_notes"
+            },
+            {
+              "name": "summary"
+            },
+            {
+              "name": "reply"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        288,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gR94CAm5Ajd-_6TCqrZamo4ycG6e-TZpGPXNNr-6izU/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.name }}",
+            "Phone": "={{ $json.phone }}",
+            "Company": "={{ $json.company }}",
+            "Interest": "={{ $json.interest }}",
+            "qualification_notes": "={{ $json.qualification_notes }}",
+            "summary": "={{ $json.summary }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Interest",
+              "displayName": "Interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        336
+      ],
+      "id": "b88c970e-28de-49a0-9389-09bffb4d58d5",
+      "name": "Guardar Lead",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gQqTt7sXINvS2Nk1",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4f070ffc-1109-46c2-b195-dec327b0199b",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c8a81635-d971-410e-b498-55667e579eb9",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "5ec50665-b601-4d8b-9173-7e4bc3a1e2c8",
+              "leftValue": "={{ $json.company }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f25d4590-adf7-49fc-ab97-3172c9506269",
+              "leftValue": "={{ $json.interest }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c75f3d86-12e9-4d7f-b8b8-41f5e9598d0e",
+              "leftValue": "={{ $json.qualification_notes }}",
+              "rightValue": "=null",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "8823a57b-042e-4abe-bce8-49e4c8963532",
+              "leftValue": "={{ $json.summary }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        352
+      ],
+      "id": "84a18c43-a965-4a98-b382-af312a7c4d68",
+      "name": "Validar flujo"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "UcdDAmifHdCuvhnx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/UcdDAmifHdCuvhnx",
+          "cachedResultName": "Worker 2 (Manejo de Errores)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $json.timestamp }}",
+            "error": "={{ $json.error }}",
+            "workflow": "={{ $json.workflow }}",
+            "nodo": "Guardar Lead (Google Sheet) - Worker 1"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "nodo",
+              "displayName": "nodo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        960,
+        624
+      ],
+      "id": "7ab2973d-d277-4666-84ff-f119981ffa27",
+      "name": "Llamar Worker 2 (Manejo de Errores)"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=🔔 **Nuevo lead detectado — CotiSolutions**\n\n**👤 Datos del Cliente:**\n• **Nombre:** {{ $json.Name }}\n• **Teléfono:** {{ $json.Phone }}\n• **Empresa:** {{ $json.Company }}\n• **Interés principal:** {{ $json.Interest }}\n\n**📝 Notas de Calificación:**\n> {{ $json.qualification_notes }}\n\n**📌 Resumen Comercial:**\n> {{ $json.summary }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        960,
+        256
+      ],
+      "id": "1102e700-7d9b-419f-a869-4a07ca6ba2b9",
+      "name": "Aviso de Lead",
+      "webhookId": "b0459e0b-22ad-4ee4-95c2-719ba150db61",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "5spGz0UYfWRWaNWX",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Alerta al Equipo de Ventas\nEnvía una notificación formateada a tu canal de Discord con los datos del nuevo lead detectado por el agente.",
+        "height": 208,
+        "width": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "cbac746e-c693-4425-ae9d-d19254c8685b",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Procesamiento & Guardado de Leads\nValidación de flujo y persistencia de datos limpios en Google Sheets.",
+        "height": 80,
+        "width": 544,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "9f6691f1-7ff1-47c4-998b-0f9ed8221d14",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Worker 2\nDelegación del payload de error al sub-workflow especialista para su registro y contingencia centralizada.",
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        912,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "a9dc91b3-c917-4a8b-815f-29adffa92637",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Validar flujo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar flujo": {
+      "main": [
+        [
+          {
+            "node": "Guardar Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Lead": {
+      "main": [
+        [
+          {
+            "node": "Aviso de Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Llamar Worker 2 (Manejo de Errores)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ff5352a9-99e7-456e-8aa9-7c5f6df37926",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
+  },
+  "nodeGroups": [],
+  "id": "C1ixlmyEnrBdi9aU",
+  "tags": []
+}

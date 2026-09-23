@@ -1,0 +1,240 @@
+{
+  "name": "Worker 2 (Manejo de Errores)",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "timestamp"
+            },
+            {
+              "name": "error"
+            },
+            {
+              "name": "workflow"
+            },
+            {
+              "name": "nodo"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gR94CAm5Ajd-_6TCqrZamo4ycG6e-TZpGPXNNr-6izU/edit?usp=sharing",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Logs / Errors",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Error": "={{ $json.error }}",
+            "Fecha / Hora": "={{ $json.timestamp }}",
+            "Workflow": "={{ $json.workflow }}",
+            "Nodo": "={{ $json.nodo }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha / Hora",
+              "displayName": "Fecha / Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Error",
+              "displayName": "Error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Workflow",
+              "displayName": "Workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nodo",
+              "displayName": "Nodo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        352
+      ],
+      "id": "6d35b7ae-16d4-48fd-8458-ebd1bec3e683",
+      "name": "Guardar Errores",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gQqTt7sXINvS2Nk1",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Manejo de Excepciones\nAuditoría y registro automático de errores en planilla de control para observabilidad.",
+        "height": 112,
+        "width": 432,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        240,
+        224
+      ],
+      "typeVersion": 1,
+      "id": "95b118a4-fe2b-4d16-9894-c35fbe90280f",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Alerta al Equipo de Soporte\nEnvía una notificación formateada al canal de Discord con los datos del error detectado.",
+        "height": 176,
+        "width": 208,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        64
+      ],
+      "typeVersion": 1,
+      "id": "8370ff04-3893-47de-b793-592ec84e3d5e",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=⚠️ **¡Atención! Se produjo un error en la automatización**\n\n• **Workflow afectado:** `{{ $json.Workflow }}`\n• **Nodo afectado:** `{{ $json.Nodo }}`\n• **Detalle del error:** \n> ```\n> {{ $json.Error }}\n> ```\n\n🔍 *Por favor, revisa el panel de ejecución en n8n para verificar el estado del flujo.*",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        752,
+        256
+      ],
+      "id": "f9098b35-937d-4ea0-8836-136c62a4b820",
+      "name": "Aviso de Error",
+      "webhookId": "0efd01d1-528f-494e-8d84-5aa532bf1303",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "SvfMCgCwYVbFJ13t",
+          "name": "Discord Webhook Errores"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=⚠️ **¡Atención! Se produjo un error en la automatización {{ $json.workflow }}**\n\n• **Nodo afectado:** `{{ $json.nodo }}`\n• **Detalle del error:** \n> ```\n> {{ $json.error }}\n> ```\n\n🔍 *Por favor, revisa el panel de ejecución en n8n para verificar el estado del flujo.*",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        752,
+        480
+      ],
+      "id": "e39a6cb8-4003-4ca3-9b14-5d830bff85e4",
+      "name": "Aviso de Error en nodo",
+      "webhookId": "1313e49f-6b00-4d6d-909a-fc05db789dfe",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "SvfMCgCwYVbFJ13t",
+          "name": "Discord Webhook Errores"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Guardar Errores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Errores": {
+      "main": [
+        [
+          {
+            "node": "Aviso de Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Aviso de Error en nodo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5f50da90-2a46-429a-b162-da1290770994",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
+  },
+  "nodeGroups": [],
+  "id": "UcdDAmifHdCuvhnx",
+  "tags": []
+}
