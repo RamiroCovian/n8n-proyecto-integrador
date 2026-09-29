@@ -1,0 +1,360 @@
+{
+  "name": "Worker 3 - Derivacion Humana",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "user_name"
+            },
+            {
+              "name": "phone"
+            },
+            {
+              "name": "company"
+            },
+            {
+              "name": "intent"
+            },
+            {
+              "name": "qualification_notes"
+            },
+            {
+              "name": "last_summary"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "status"
+            },
+            {
+              "name": "reply"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgZtjn4CU4VO7D7",
+          "mode": "list",
+          "cachedResultName": "datos_leads",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIMEy6zS1yu0OwW",
+          "mode": "list",
+          "cachedResultName": "Leads CotiSolutions",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sessionId": "={{ $json.sessionId }}",
+            "user_name": "={{ $json.name }}",
+            "phone": "={{ $json.phone }}",
+            "company": "={{ $json.company }}",
+            "interest": "={{ $json.interest }}",
+            "qualification_notes": "={{ $json.qualification_notes }}",
+            "last_summary": "={{ $json.summary }}",
+            "intent": "={{ $json.intent }}",
+            "reason": "={{ $json.reason }}",
+            "status": "Done"
+          },
+          "matchingColumns": [
+            "sessionId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "last_summary",
+              "displayName": "last_summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        496,
+        352
+      ],
+      "id": "cbe06e95-0466-43cf-bec4-efb4fea0fc54",
+      "name": "Guardo Datos",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "y3p7Ujsot9I5BwTV",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=🔔 **Solicitud de derivacion humana — CotiSolutions**\n\n**👤 Datos del Cliente:**\n• **Nombre:** {{ $json.fields.user_name }}\n• **Teléfono:** {{ $json.fields.phone }}\n• **Empresa:** {{ $json.fields.company }}\n• **Intencion :** {{ $json.fields.intent }}\n• **Razon:** {{ $json.fields.reason }}\n• **Interés principal:** {{ $json.fields.interest }}\n\n**📝 Notas de Calificación:**\n> {{ $json.fields.qualification_notes }}\n\n**📌 Resumen Comercial:**\n> {{ $json.fields.last_summary }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        752,
+        352
+      ],
+      "id": "173241ef-92fc-4409-b71b-62c3a13590bf",
+      "name": "Aviso de Derivacion Humana",
+      "webhookId": "f2b795db-25c1-423c-a4a3-7a477d4fada8",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "X3nHlG9FqkoK42LP",
+          "name": "Discord Webhook Derivacion Humana"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "703df307-5238-45ca-8f57-9118714e6952",
+              "name": "reply",
+              "value": "={{ $('When Executed by Another Workflow').item.json.reply }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        992,
+        352
+      ],
+      "id": "73d39235-148d-4021-a77e-bc830804dcca",
+      "name": "Respuesta al Lead"
+    },
+    {
+      "parameters": {
+        "content": "## Pipeline de Derivación Humana & Notificación Asincrónica \n**Recepción Sub-workflow**: Captura los datos enviados desde el orquestador principal mediante el trigger de ejecución.\n\n**Persistencia en Airtable**: Actualiza el estado del caso en la base de datos (Guardo Datos).\n\n**Canal de Alerta**: Dispara una notificación automatizada hacia el canal correspondiente (Aviso de Derivación Humana).\n\n**Respuesta al Lead**: Envía el mensaje final de confirmación al usuario informando que un asesor humano tomará el contacto.",
+        "height": 304,
+        "width": 864
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        272,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "eb179441-3ebb-4d6c-bec5-a72047c1359a",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Guardo Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardo Datos": {
+      "main": [
+        [
+          {
+            "node": "Aviso de Derivacion Humana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso de Derivacion Humana": {
+      "main": [
+        [
+          {
+            "node": "Respuesta al Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7ebc6ab6-a9f0-4598-b6eb-4aefd3d14c20",
+  "meta": {
+    "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
+  },
+  "nodeGroups": [],
+  "id": "vEtv9xm3RWQ7FVc6",
+  "tags": []
+}
