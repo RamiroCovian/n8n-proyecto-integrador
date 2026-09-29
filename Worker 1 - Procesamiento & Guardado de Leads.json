@@ -25,6 +25,19 @@
             },
             {
               "name": "reply"
+            },
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "intent"
+            },
+            {
+              "name": "reason"
+            },
+            {
+              "name": "turn_count",
+              "type": "number"
             }
           ]
         }
@@ -34,73 +47,791 @@
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "position": [
-        288,
+        -64,
         352
       ]
     },
     {
       "parameters": {
-        "operation": "append",
-        "documentId": {
+        "authentication": "webhook",
+        "content": "=🔔 **Nuevo lead detectado — CotiSolutions**\n\n**👤 Datos del Cliente:**\n• **Nombre:** {{ $json.fields.user_name }}\n• **Teléfono:** {{ $json.fields.phone }}\n• **Empresa:** {{ $json.fields.company }}\n• **Interés principal:** {{ $json.fields.interest }}\n\n**📝 Notas de Calificación:**\n> {{ $json.fields.qualification_notes }}\n\n**📌 Resumen Comercial:**\n> {{ $json.fields.last_summary }}",
+        "options": {},
+        "embeds": {
+          "values": []
+        },
+        "files": {
+          "values": []
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        224
+      ],
+      "id": "1102e700-7d9b-419f-a869-4a07ca6ba2b9",
+      "name": "Aviso de Lead",
+      "webhookId": "b0459e0b-22ad-4ee4-95c2-719ba150db61",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "5spGz0UYfWRWaNWX",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Cierre de Ciclo Comercial & Notificación\n**Actualización a Done (Actualizar Status Lead)**: Modifica el estado del registro en Airtable a Done una vez validada la condición comercial.\n\n**Alerta Comercial (Aviso de Lead)**: Envía una notificación formateada al canal de Discord con los datos del lead detectado por el agente.\n\n**Respuesta Final (Respuesta Final Chat)**: Despacha la contestación definitiva al usuario para cerrar la interacción.",
+        "height": 256,
+        "width": 816,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1968,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "cbac746e-c693-4425-ae9d-d19254c8685b",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Capa de Ingreso, Conteo & Validación de Turnos\n**Recepción Sub-workflow**: Captura los datos enviados desde el orquestador principal mediante el disparador de ejecución.\n\n**Procesamiento en JavaScript (Contabilizar Turnos)**: Incrementa de forma persistente el contador de turnos (turn_count) extrayendo y normalizando el valor histórico de la sesión.\n\n**Validación de Flujo (IF)**: Evalúa si la conversación supera los 5 mensajes para determinar si debe desviar el flujo hacia la rama de summarización o continuar por el canal estándar.",
+        "height": 304,
+        "width": 656,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "9f6691f1-7ff1-47c4-998b-0f9ed8221d14",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Worker 2\nDelegación del payload de error al sub-workflow especialista para su registro y contingencia centralizada.",
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2528,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "a9dc91b3-c917-4a8b-815f-29adffa92637",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55c9a068-0b4b-461b-9878-b2083ff68917",
+              "name": "reply",
+              "value": "={{ $('Validar Longitud').item.json.reply }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2560,
+        224
+      ],
+      "id": "06132369-82fb-4881-b7d9-d161fee02da0",
+      "name": "Respuesta Final Chat"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "703df307-5238-45ca-8f57-9118714e6952",
+              "name": "reply",
+              "value": "={{ $('Validar Longitud').item.json.reply }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1520,
+        304
+      ],
+      "id": "45d72b4f-3ef2-4fa4-ad13-0a2e0983d375",
+      "name": "Respuesta al Lead"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e260da07-02ed-4e9a-85f5-20ce2588dde2",
+              "leftValue": "={{ $json.fields.user_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "9f31004c-5e9a-4b70-a51e-b79a2f997473",
+              "leftValue": "={{ $json.fields.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0fe473c2-7f59-443c-8944-86321be04559",
+              "leftValue": "={{ $json.fields.company }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "def23959-5eb5-463d-9087-58a53a84f805",
+              "leftValue": "={{ $json.fields.interest }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "aa18b44d-07e7-41c1-8638-230586b97a9b",
+              "leftValue": "={{ $json.fields.qualification_notes }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6ff98778-2c26-44c9-ab11-e0dfb5194e71",
+              "leftValue": "={{ $json.fields.last_summary }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "f8710c82-f290-4492-9132-810ced02091c",
+              "leftValue": "={{ $json.fields.status }}",
+              "rightValue": "In progress",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1280,
+        256
+      ],
+      "id": "05240f9a-a7b9-4354-b113-bb6b3a59f3a3",
+      "name": "Validar Status"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
           "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1gR94CAm5Ajd-_6TCqrZamo4ycG6e-TZpGPXNNr-6izU/edit?usp=sharing",
+          "value": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW/viwXEOnoA6mERBSXi",
           "mode": "url"
         },
-        "sheetName": {
+        "table": {
           "__rl": true,
-          "value": "Leads",
-          "mode": "name"
+          "value": "tblIMEy6zS1yu0OwW",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $json.name }}",
-            "Phone": "={{ $json.phone }}",
-            "Company": "={{ $json.company }}",
-            "Interest": "={{ $json.interest }}",
-            "qualification_notes": "={{ $json.qualification_notes }}",
-            "summary": "={{ $json.summary }}"
+            "user_name": "={{ $('Validar Longitud').item.json.name }}",
+            "status": "Done",
+            "sessionId": "={{ $('Validar Longitud').item.json.sessionId }}",
+            "phone": "={{ $('Validar Longitud').item.json.phone }}",
+            "company": "={{ $('Validar Longitud').item.json.company }}",
+            "interest": "={{ $('Validar Longitud').item.json.interest }}",
+            "qualification_notes": "={{ $('Validar Longitud').item.json.qualification_notes }}",
+            "last_summary": "={{ $('Validar Longitud').item.json.summary }}",
+            "intent": "={{ $('Validar Longitud').item.json.intent }}",
+            "reason": "={{ $('Validar Longitud').item.json.reason }}",
+            "update_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "sessionId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "last_summary",
+              "displayName": "last_summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "turn_count",
+              "displayName": "turn_count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "update_at",
+              "displayName": "update_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2016,
+        240
+      ],
+      "id": "3045608a-2daf-4402-9fde-9b74c838f0f2",
+      "name": "Actualizar Status Lead",
+      "retryOnFail": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "y3p7Ujsot9I5BwTV",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW/viwXEOnoA6mERBSXi",
+          "mode": "url"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIMEy6zS1yu0OwW",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $('Validar Longitud').item.json.name }}",
+            "status": "In progress",
+            "sessionId": "={{ $('Validar Longitud').item.json.sessionId }}",
+            "phone": "={{ $('Validar Longitud').item.json.phone }}",
+            "company": "={{ $('Validar Longitud').item.json.company }}",
+            "interest": "={{ $('Validar Longitud').item.json.interest }}",
+            "qualification_notes": "={{ $('Validar Longitud').item.json.qualification_notes }}",
+            "last_summary": "={{ $('Validar Longitud').item.json.summary }}",
+            "reason": "={{ $('Validar Longitud').item.json.reason }}",
+            "intent": "={{ $('Validar Longitud').item.json.intent }}",
+            "turn_count": "={{ $json.turn_count }}",
+            "created_at": "=",
+            "update_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "sessionId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "last_summary",
+              "displayName": "last_summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "turn_count",
+              "displayName": "turn_count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "update_at",
+              "displayName": "update_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        272
+      ],
+      "id": "11b944ff-7a80-45eb-83f3-45936c209a27",
+      "name": "Actualizar Datos Lead",
+      "retryOnFail": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "y3p7Ujsot9I5BwTV",
+          "name": "Airtable Personal Access Token account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "UcdDAmifHdCuvhnx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/UcdDAmifHdCuvhnx",
+          "cachedResultName": "Worker 2 (Manejo de Errores)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "error": "={{ $json.error }}",
+            "timestamp": "={{ $json.timestamp }}",
+            "workflow": "={{ $json.workflow }}",
+            "nodo": "Actualizar Lead - Airtable",
+            "sessionId": "={{ $json.fields.sessionId }}",
+            "name": "={{ $json.fields.user_name }}",
+            "company": "={{ $json.fields.company }}",
+            "phone": "={{ $json.fields.phone }}",
+            "interest": "={{ $json.fields.interest }}",
+            "last_summary": "={{ $json.fields.last_summary }}",
+            "qualification_notes": "={{ $json.fields.qualification_notes }}"
           },
           "matchingColumns": [],
           "schema": [
             {
-              "id": "Name",
-              "displayName": "Name",
+              "id": "timestamp",
+              "displayName": "timestamp",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             },
             {
-              "id": "Phone",
-              "displayName": "Phone",
+              "id": "error",
+              "displayName": "error",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             },
             {
-              "id": "Company",
-              "displayName": "Company",
+              "id": "workflow",
+              "displayName": "workflow",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             },
             {
-              "id": "Interest",
-              "displayName": "Interest",
+              "id": "nodo",
+              "displayName": "nodo",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             },
             {
@@ -109,42 +840,503 @@
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
               "removed": false
             },
             {
-              "id": "summary",
-              "displayName": "summary",
+              "id": "last_summary",
+              "displayName": "last_summary",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "string",
               "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1584,
+        688
+      ],
+      "id": "813808fe-cce4-4138-a644-235796c010a0",
+      "name": "Llamar Worker 2 (Manejo de Errores Actualizacion Datos)"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "UcdDAmifHdCuvhnx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/UcdDAmifHdCuvhnx",
+          "cachedResultName": "Worker 2 (Manejo de Errores)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "error": "={{ $json.error }}",
+            "timestamp": "={{ $json.timestamp }}",
+            "workflow": "={{ $json.workflow }}",
+            "nodo": "Actualizar Lead - Airtable"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "workflow",
+              "displayName": "workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "nodo",
+              "displayName": "nodo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "last_summary",
+              "displayName": "last_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2592,
+        688
+      ],
+      "id": "5ab6b853-0b7b-4628-836d-616564854568",
+      "name": "Llamar Worker 2 (Manejo de Errores Status)"
+    },
+    {
+      "parameters": {
+        "content": "## Worker 2\nDelegación del payload de error al sub-workflow especialista para su registro y contingencia centralizada.",
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "718fb070-a494-4b36-bbfa-d7894361b683",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Sos un sistema experto de análisis y síntesis de conversaciones comerciales.  Tu única tarea es procesar el historial completo de la conversación provisto y extraer un resumen estructurado estrictamente en formato JSON válido.  No respondas al usuario, no converses, solo devuelve un objeto JSON con esta estructura exacta y sin texto adicional alrededor:  {   \"asunto_principal\": \"string con el tema central de la charla\",   \"puntos_clave\": [\"punto 1\", \"punto 2\", \"punto 3\"],   \"accion_requerida\": \"string indicando qué paso comercial o técnico sigue\" }"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        624,
+        864
+      ],
+      "id": "f9c20b16-31fa-4e25-a56b-b0a6fe4f8c90",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        624,
+        1072
+      ],
+      "id": "ecc74191-b82f-4dfb-8e77-437edc278b82",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "9e5HBayKBG7R3rbH",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appgZtjn4CU4VO7D7",
+          "mode": "list",
+          "cachedResultName": "datos_leads",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblIMEy6zS1yu0OwW",
+          "mode": "list",
+          "cachedResultName": "Leads CotiSolutions",
+          "cachedResultUrl": "https://airtable.com/appgZtjn4CU4VO7D7/tblIMEy6zS1yu0OwW"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sessionId": "={{ $('Validar Longitud').item.json.sessionId }}",
+            "update_at": "={{ $now.toISO() }}",
+            "turn_count": "={{ $('Validar Longitud').item.json.turn_count }}",
+            "last_summary": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "sessionId"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "company",
+              "displayName": "company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "interest",
+              "displayName": "interest",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "qualification_notes",
+              "displayName": "qualification_notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "last_summary",
+              "displayName": "last_summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "intent",
+              "displayName": "intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reason",
+              "displayName": "reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "turn_count",
+              "displayName": "turn_count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "update_at",
+              "displayName": "update_at",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
               "removed": false
             }
           ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        720,
-        336
-      ],
-      "id": "b88c970e-28de-49a0-9389-09bffb4d58d5",
-      "name": "Guardar Lead",
-      "retryOnFail": true,
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "gQqTt7sXINvS2Nk1",
-          "name": "Google Sheets account"
+        "options": {
+          "typecast": true
         }
       },
-      "onError": "continueErrorOutput"
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        864
+      ],
+      "id": "c1ef630c-a673-43ec-9220-cfe60cbaa6ac",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "y3p7Ujsot9I5BwTV",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "703df307-5238-45ca-8f57-9118714e6952",
+              "name": "reply",
+              "value": "={{ $('Validar Longitud').item.json.reply }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1136,
+        864
+      ],
+      "id": "a8709b85-f1c2-46bd-a4f7-4a516c621a91",
+      "name": "Respuesta al Lead1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputItem = $input.first().json;\n\nconst previousTurn = (inputItem.turn_count !== null && inputItem.turn_count !== undefined && !isNaN(inputItem.turn_count))  \n  ? Number(inputItem.turn_count)  \n  : 0;\n\nconst currentTurn = previousTurn + 1;\n\nreturn {\n  json: {\n    ...inputItem,\n    turn_count: Number(currentTurn) // <-- Formato numérico puro\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        352
+      ],
+      "id": "0ff457a4-b755-4fab-ba07-e9b5d43559c3",
+      "name": "Contabilizar turnos"
+    },
+    {
+      "parameters": {
+        "content": "## Rama de Summarization & Limpieza de Contexto\n**Activación por Longitud (False)**: Se dispara cuando el contador de turnos supera los 5 mensajes.\n\n**Procesamiento Económico (Basic LLM Chain + Groq)**: Envía el historial a un modelo eficiente para extraer un JSON estricto (asunto_principal, puntos_clave, accion_requerida).\n\n**Persistencia Idempotente**: Actualiza el campo de resumen en Airtable de forma limpia y despacha la respuesta final al lead.",
+        "height": 272,
+        "width": 656,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        608,
+        560
+      ],
+      "typeVersion": 1,
+      "id": "8bc0f5c8-b612-475b-8b16-f5e9a13b83c2",
+      "name": "Sticky Note2"
     },
     {
       "parameters": {
@@ -215,162 +1407,55 @@
                 "operation": "notEmpty",
                 "singleValue": true
               }
+            },
+            {
+              "id": "2d53b577-b433-4067-b7b9-830dcb787dd5",
+              "leftValue": "={{ $json.sessionId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "dfe7c76b-0746-43c5-bbb6-6c230235bdc4",
+              "leftValue": "={{ $json.turn_count }}",
+              "rightValue": 5,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        480,
+        416,
         352
       ],
       "id": "84a18c43-a965-4a98-b382-af312a7c4d68",
-      "name": "Validar flujo"
+      "name": "Validar Longitud"
     },
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "UcdDAmifHdCuvhnx",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/UcdDAmifHdCuvhnx",
-          "cachedResultName": "Worker 2 (Manejo de Errores)"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "timestamp": "={{ $json.timestamp }}",
-            "error": "={{ $json.error }}",
-            "workflow": "={{ $json.workflow }}",
-            "nodo": "Guardar Lead (Google Sheet) - Worker 1"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "timestamp",
-              "displayName": "timestamp",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            },
-            {
-              "id": "error",
-              "displayName": "error",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            },
-            {
-              "id": "workflow",
-              "displayName": "workflow",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            },
-            {
-              "id": "nodo",
-              "displayName": "nodo",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "canBeUsedToMatch": true,
-              "type": "string",
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        960,
-        624
-      ],
-      "id": "7ab2973d-d277-4666-84ff-f119981ffa27",
-      "name": "Llamar Worker 2 (Manejo de Errores)"
-    },
-    {
-      "parameters": {
-        "authentication": "webhook",
-        "content": "=🔔 **Nuevo lead detectado — CotiSolutions**\n\n**👤 Datos del Cliente:**\n• **Nombre:** {{ $json.Name }}\n• **Teléfono:** {{ $json.Phone }}\n• **Empresa:** {{ $json.Company }}\n• **Interés principal:** {{ $json.Interest }}\n\n**📝 Notas de Calificación:**\n> {{ $json.qualification_notes }}\n\n**📌 Resumen Comercial:**\n> {{ $json.summary }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.discord",
-      "typeVersion": 2,
-      "position": [
-        960,
-        256
-      ],
-      "id": "1102e700-7d9b-419f-a869-4a07ca6ba2b9",
-      "name": "Aviso de Lead",
-      "webhookId": "b0459e0b-22ad-4ee4-95c2-719ba150db61",
-      "credentials": {
-        "discordWebhookApi": {
-          "id": "5spGz0UYfWRWaNWX",
-          "name": "Discord Webhook account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## Alerta al Equipo de Ventas\nEnvía una notificación formateada a tu canal de Discord con los datos del nuevo lead detectado por el agente.",
-        "height": 208,
-        "width": 224,
-        "color": 4
+        "content": "## Flujo Estándar de Actualización & Respuesta\n**Activacion por Longitud (True)**: Se ejecuta cuando la conversación se mantiene dentro de los primeros 5 turnos.\n\n**Persistencia Operativa (Actualizar Datos Lead)**: Guarda el estado, el contador de turnos y las notas de calificación en Airtable de forma iterativa.\n\n**Control de Ciclo (Validar Status)**: Evalúa si el caso se encuentra en estado \"In progress\". La salida True canaliza el flujo activo para que el agente continúe gestionando la interacción antes de despachar la respuesta final al usuario.",
+        "height": 240,
+        "width": 880,
+        "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        912,
-        32
+        896,
+        0
       ],
       "typeVersion": 1,
-      "id": "cbac746e-c693-4425-ae9d-d19254c8685b",
-      "name": "Sticky Note6"
-    },
-    {
-      "parameters": {
-        "content": "## Procesamiento & Guardado de Leads\nValidación de flujo y persistencia de datos limpios en Google Sheets.",
-        "height": 80,
-        "width": 544,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        288,
-        240
-      ],
-      "typeVersion": 1,
-      "id": "9f6691f1-7ff1-47c4-998b-0f9ed8221d14",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "content": "## Worker 2\nDelegación del payload de error al sub-workflow especialista para su registro y contingencia centralizada.",
-        "color": 3
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        912,
-        448
-      ],
-      "typeVersion": 1,
-      "id": "a9dc91b3-c917-4a8b-815f-29adffa92637",
-      "name": "Sticky Note"
+      "id": "66bacebe-3d60-4f28-b897-37eb0fe2f259",
+      "name": "Sticky Note3"
     }
   ],
   "pinData": {},
@@ -379,25 +1464,43 @@
       "main": [
         [
           {
-            "node": "Validar flujo",
+            "node": "Contabilizar turnos",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Validar flujo": {
+    "Aviso de Lead": {
       "main": [
         [
           {
-            "node": "Guardar Lead",
+            "node": "Respuesta Final Chat",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Guardar Lead": {
+    "Validar Status": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Status Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta al Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Status Lead": {
       "main": [
         [
           {
@@ -408,7 +1511,87 @@
         ],
         [
           {
-            "node": "Llamar Worker 2 (Manejo de Errores)",
+            "node": "Llamar Worker 2 (Manejo de Errores Status)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Datos Lead": {
+      "main": [
+        [
+          {
+            "node": "Validar Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Llamar Worker 2 (Manejo de Errores Actualizacion Datos)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update record": {
+      "main": [
+        [
+          {
+            "node": "Respuesta al Lead1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contabilizar turnos": {
+      "main": [
+        [
+          {
+            "node": "Validar Longitud",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Longitud": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Datos Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Basic LLM Chain",
             "type": "main",
             "index": 0
           }
@@ -421,12 +1604,15 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "ff5352a9-99e7-456e-8aa9-7c5f6df37926",
+  "versionId": "27f12c70-8af0-429c-a863-8096c856a8c1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
   },
   "nodeGroups": [],
+  "id": "C1ixlmyEnrBdi9aU",
+  "tags": []
+}
   "id": "C1ixlmyEnrBdi9aU",
   "tags": []
 }
