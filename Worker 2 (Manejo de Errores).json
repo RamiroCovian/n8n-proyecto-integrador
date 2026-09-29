@@ -16,6 +16,27 @@
             },
             {
               "name": "nodo"
+            },
+            {
+              "name": "sessionId"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "phone"
+            },
+            {
+              "name": "company"
+            },
+            {
+              "name": "interest"
+            },
+            {
+              "name": "qualification_notes"
+            },
+            {
+              "name": "last_summary"
             }
           ]
         }
@@ -140,7 +161,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        704,
+        736,
         64
       ],
       "typeVersion": 1,
@@ -150,13 +171,13 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "=⚠️ **¡Atención! Se produjo un error en la automatización**\n\n• **Workflow afectado:** `{{ $json.Workflow }}`\n• **Nodo afectado:** `{{ $json.Nodo }}`\n• **Detalle del error:** \n> ```\n> {{ $json.Error }}\n> ```\n\n🔍 *Por favor, revisa el panel de ejecución en n8n para verificar el estado del flujo.*",
+        "content": "=⚠️ **¡Atención! Se produjo un error en la automatización**\n\n• **Workflow afectado:** `{{ $('When Executed by Another Workflow').item.json.sessionId }}`\n• **Nodo afectado:** `{{ $('When Executed by Another Workflow').item.json.nodo }}`\n• **Detalle del error:** \n> ```\n> {{ $('When Executed by Another Workflow').item.json.error }}\n> ```\n\n• **Nombre del Lead:** `}{{ $('When Executed by Another Workflow').item.json.name }}`\n• **Telefono:** `{{ $('When Executed by Another Workflow').item.json.phone }}`\n• **Empresa:** `{{ $('When Executed by Another Workflow').item.json.company }}`\n• **Interes principal:** `{{ $('When Executed by Another Workflow').item.json.interest }}`\n• **Notas de Calificacion:** `{{ $('When Executed by Another Workflow').item.json.qualification_notes }}`\n• **Resumen Comercial:** `{{ $('When Executed by Another Workflow').item.json.last_summary }}`\n\n🔍 *Por favor, revisa el panel de ejecución en n8n para verificar el estado del flujo.*",
         "options": {}
       },
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        752,
+        784,
         256
       ],
       "id": "f9098b35-937d-4ea0-8836-136c62a4b820",
@@ -178,7 +199,7 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        752,
+        784,
         480
       ],
       "id": "e39a6cb8-4003-4ca3-9b14-5d830bff85e4",
@@ -190,6 +211,29 @@
           "name": "Discord Webhook Errores"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9f7133af-a64f-41dd-87d9-8cd6087837c7",
+              "name": "reply",
+              "value": "=¡Uy! Disculpame, {{ $('When Executed by Another Workflow').item.json.name }}, pero acabo de tener un pequeño tropiezo técnico por acá. ¿Te animás a repetirme el último mensaje así te sigo ayudando con los servicios de CotiSolutions? ¡Gracias! ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1056,
+        368
+      ],
+      "id": "9a4b7282-5dac-4194-9970-9f6c62269af4",
+      "name": "Respuesta al Lead"
     }
   ],
   "pinData": {},
@@ -222,6 +266,28 @@
           }
         ]
       ]
+    },
+    "Aviso de Error": {
+      "main": [
+        [
+          {
+            "node": "Respuesta al Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aviso de Error en nodo": {
+      "main": [
+        [
+          {
+            "node": "Respuesta al Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -229,7 +295,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "5f50da90-2a46-429a-b162-da1290770994",
+  "versionId": "25cce4d0-2c98-46c7-a90c-6ce311c69779",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
