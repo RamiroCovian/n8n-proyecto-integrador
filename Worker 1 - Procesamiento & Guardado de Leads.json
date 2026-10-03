@@ -81,15 +81,15 @@
     },
     {
       "parameters": {
-        "content": "## Cierre de Ciclo Comercial & Notificación\n**Actualización a Done (Actualizar Status Lead)**: Modifica el estado del registro en Airtable a Done una vez validada la condición comercial.\n\n**Alerta Comercial (Aviso de Lead)**: Envía una notificación formateada al canal de Discord con los datos del lead detectado por el agente.\n\n**Respuesta Final (Respuesta Final Chat)**: Despacha la contestación definitiva al usuario para cerrar la interacción.",
-        "height": 256,
+        "content": "## Cierre de Ciclo Comercial & Notificación\n* **Actualización a Done (Actualizar Status Lead)**: Modifica el estado del registro en Airtable a Done una vez validada la condición comercial.\n\n* **Alerta Comercial (Aviso de Lead)**: Envía una notificación formateada al canal de Discord con los datos del lead detectado por el agente.\n\n* **Respuesta Final (Respuesta Final Chat)**: Despacha la contestación definitiva al usuario para cerrar la interacción.",
+        "height": 176,
         "width": 816,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1968,
-        -64
+        1984,
+        32
       ],
       "typeVersion": 1,
       "id": "cbac746e-c693-4425-ae9d-d19254c8685b",
@@ -97,15 +97,15 @@
     },
     {
       "parameters": {
-        "content": "## Capa de Ingreso, Conteo & Validación de Turnos\n**Recepción Sub-workflow**: Captura los datos enviados desde el orquestador principal mediante el disparador de ejecución.\n\n**Procesamiento en JavaScript (Contabilizar Turnos)**: Incrementa de forma persistente el contador de turnos (turn_count) extrayendo y normalizando el valor histórico de la sesión.\n\n**Validación de Flujo (IF)**: Evalúa si la conversación supera los 5 mensajes para determinar si debe desviar el flujo hacia la rama de summarización o continuar por el canal estándar.",
-        "height": 304,
+        "content": "## Capa de Ingreso, Conteo & Validación de Turnos\n* **Recepción Sub-workflow**: Captura los datos enviados desde el orquestador principal mediante el disparador de ejecución.\n\n* **Procesamiento en JavaScript (Contabilizar Turnos)**: Incrementa de forma persistente el contador de turnos (turn_count) extrayendo y normalizando el valor histórico de la sesión.\n\n* **Validación de Flujo (IF)**: Evalúa si la conversación supera los 5 mensajes para determinar si debe desviar el flujo hacia la rama de summarización o continuar por el canal estándar.",
+        "height": 192,
         "width": 656,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -96,
-        32
+        -112,
+        128
       ],
       "typeVersion": 1,
       "id": "9f6691f1-7ff1-47c4-998b-0f9ed8221d14",
@@ -1324,15 +1324,15 @@
     },
     {
       "parameters": {
-        "content": "## Rama de Summarization & Limpieza de Contexto\n**Activación por Longitud (False)**: Se dispara cuando el contador de turnos supera los 5 mensajes.\n\n**Procesamiento Económico (Basic LLM Chain + Groq)**: Envía el historial a un modelo eficiente para extraer un JSON estricto (asunto_principal, puntos_clave, accion_requerida).\n\n**Persistencia Idempotente**: Actualiza el campo de resumen en Airtable de forma limpia y despacha la respuesta final al lead.",
-        "height": 272,
+        "content": "## Rama de Summarization & Limpieza de Contexto\n* **Activación por Longitud (False)**: Se dispara cuando el contador de turnos supera los 5 mensajes.\n\n* **Procesamiento Económico (Basic LLM Chain + Groq)**: Envía el historial a un modelo eficiente para extraer un JSON estricto (asunto_principal, puntos_clave, accion_requerida).\n\n* **Persistencia Idempotente**: Actualiza el campo de resumen en Airtable de forma limpia y despacha la respuesta final al lead.",
+        "height": 208,
         "width": 656,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         608,
-        560
+        624
       ],
       "typeVersion": 1,
       "id": "8bc0f5c8-b612-475b-8b16-f5e9a13b83c2",
@@ -1443,15 +1443,15 @@
     },
     {
       "parameters": {
-        "content": "## Flujo Estándar de Actualización & Respuesta\n**Activacion por Longitud (True)**: Se ejecuta cuando la conversación se mantiene dentro de los primeros 5 turnos.\n\n**Persistencia Operativa (Actualizar Datos Lead)**: Guarda el estado, el contador de turnos y las notas de calificación en Airtable de forma iterativa.\n\n**Control de Ciclo (Validar Status)**: Evalúa si el caso se encuentra en estado \"In progress\". La salida True canaliza el flujo activo para que el agente continúe gestionando la interacción antes de despachar la respuesta final al usuario.",
-        "height": 240,
+        "content": "## Flujo Estándar de Actualización & Respuesta\n* **Activación por Longitud (True):** Se ejecuta cuando la conversación se mantiene dentro de los primeros 5 turnos.\n* **Persistencia Operativa & Prevención de Duplicados (Actualizar Datos Lead):** \n  * El nodo opera en modo **Update** utilizando el identificador único (`sessionId`) recuperado en la fase inicial. \n  * Esto garantiza una operación idempotente: en lugar de insertar un registro nuevo, **busca la fila existente y actualiza sus campos** (user_name, phone, company, interest, qualification_notes, last_summary, intent, reason y updated_at), evitando por completo la duplicación de datos en la base de datos de Airtable.\n* **Control de Ciclo (Validar Status):** Verifica de forma conjunta mediante condiciones `AND` si los campos obligatorios del lead están completos y su estatus es `In progress`[cite: 6]. \n  * **Salida True:** El lead ya está completo y calificado, por lo que el flujo avanza hacia el cierre (actualizar estatus a *Done* y disparar la alerta al equipo).\n  * **Salida False:** Todavía falta recolectar datos o continuar la interacción, por lo que el flujo mantiene activo al agente conversacional.",
+        "height": 336,
         "width": 880,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
         896,
-        0
+        -80
       ],
       "typeVersion": 1,
       "id": "66bacebe-3d60-4f28-b897-37eb0fe2f259",
@@ -1604,15 +1604,12 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "27f12c70-8af0-429c-a863-8096c856a8c1",
+  "versionId": "bd2554d2-3f55-4a25-8eb0-e3dd11091b0b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "0252c74d7dad93fb53bfe8de506815f5043e005abaa782c7e785c1d93f1cdcaa"
   },
   "nodeGroups": [],
-  "id": "C1ixlmyEnrBdi9aU",
-  "tags": []
-}
   "id": "C1ixlmyEnrBdi9aU",
   "tags": []
 }
